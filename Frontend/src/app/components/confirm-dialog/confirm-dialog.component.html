@@ -1,0 +1,63 @@
+<div
+  *ngIf="state?.open"
+  class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+  (click)="dismiss()"
+>
+  <div
+    class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden animate-[fadeIn_0.15s_ease-out]"
+    (click)="$event.stopPropagation()"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'confirm-dialog-title'"
+  >
+    <div class="p-6 space-y-4">
+      <div class="flex items-start space-x-4">
+        <div
+          class="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center"
+          [ngClass]="{
+            'bg-red-50 text-red-600': state?.variant === 'danger',
+            'bg-amber-50 text-amber-600': state?.variant === 'warning',
+            'bg-primary-50 text-primary-600': state?.variant === 'primary' || !state?.variant
+          }"
+        >
+          <svg *ngIf="state?.variant === 'danger'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          </svg>
+          <svg *ngIf="state?.variant === 'warning'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <svg *ngIf="state?.variant === 'primary' || !state?.variant" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <h3 id="confirm-dialog-title" class="text-lg font-extrabold text-slate-900">{{ state?.title }}</h3>
+          <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">{{ state?.message }}</p>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-2">
+        <button
+          type="button"
+          (click)="dismiss()"
+          class="py-2.5 px-4 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl text-sm transition"
+        >
+          {{ state?.cancelText }}
+        </button>
+        <button
+          type="button"
+          (click)="accept()"
+          class="py-2.5 px-5 text-white font-semibold rounded-xl text-sm transition shadow-md"
+          [ngClass]="{
+            'bg-red-600 hover:bg-red-500 shadow-red-600/20': state?.variant === 'danger',
+            'bg-amber-600 hover:bg-amber-500 shadow-amber-600/20': state?.variant === 'warning',
+            'bg-primary-600 hover:bg-primary-500 shadow-primary-600/20': state?.variant === 'primary' || !state?.variant
+          }"
+        >
+          {{ state?.confirmText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

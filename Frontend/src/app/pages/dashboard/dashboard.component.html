@@ -1,0 +1,423 @@
+<!-- Global Toast Notification (z-[100] floats above all modals) -->
+<div *ngIf="toast.show" class="fixed top-4 right-4 z-[100] flex items-center p-4 rounded-xl shadow-2xl border text-white transition duration-300 transform scale-100 max-w-md"
+     [ngClass]="{
+       'bg-green-600 border-green-500': toast.type === 'success',
+       'bg-red-600 border-red-500': toast.type === 'danger'
+     }">
+  <svg *ngIf="toast.type === 'success'" class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+  </svg>
+  <svg *ngIf="toast.type === 'danger'" class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+  </svg>
+  <span class="text-sm font-semibold">{{ toast.message }}</span>
+</div>
+
+<div class="min-h-screen bg-slate-50 flex flex-col font-sans">
+  <!-- Shared Reusable Navbar -->
+  <app-navbar activeTab="dashboard"></app-navbar>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Welcome Header & Banner -->
+    <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-6 md:p-8 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-extrabold">Hello, {{ currentUser?.full_name }} 👋</h2>
+        <p class="text-indigo-200 text-sm md:text-base mt-1">
+          Search, discover and book suitable meeting rooms instantly
+        </p>
+      </div>
+    </div>
+
+    <!-- User Statistics Grid -->
+    <section>
+      <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center space-x-2">
+        <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        <span>Overview Statistics</span>
+      </h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Upcoming Bookings</p>
+            <p class="text-2xl font-bold text-slate-800">{{ userStats.upcomingCount }}</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Past Bookings</p>
+            <p class="text-2xl font-bold text-slate-800">{{ userStats.pastCount }}</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Time Booked</p>
+            <p class="text-2xl font-bold text-slate-800">{{ userStats.totalHours }} Hrs</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search / Filter Rooms with Building Filter -->
+    <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <div>
+        <h3 class="text-lg font-bold text-slate-800">Check Room Availability</h3>
+        <p class="text-slate-500 text-xs mt-1">Choose a date, time window, building, and capacity to find open rooms</p>
+      </div>
+
+      <form [formGroup]="searchForm" (ngSubmit)="searchRooms()" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <!-- Date -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Select Date</label>
+          <input type="date" formControlName="date" [min]="minDate" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-primary-500 transition text-sm" />
+        </div>
+
+        <!-- Start Time -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Start Time</label>
+          <input type="time" formControlName="startTime" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-primary-500 transition text-sm" />
+        </div>
+
+        <!-- End Time -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">End Time</label>
+          <input type="time" formControlName="endTime" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-primary-500 transition text-sm" />
+        </div>
+
+        <!-- Building Filter -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Building</label>
+          <select formControlName="buildingName" (change)="onBuildingChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-primary-500 transition text-sm">
+            <option value="">All Buildings</option>
+            <option *ngFor="let b of availableBuildings" [value]="b">{{ b }}</option>
+          </select>
+        </div>
+
+        <!-- Floor Filter -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Floor</label>
+          <select formControlName="floor" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-primary-500 transition text-sm">
+            <option value="">All Floors</option>
+            <option *ngFor="let f of filteredFloors" [value]="f">{{ f }}</option>
+          </select>
+        </div>
+
+        <!-- Minimum Capacity -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Capacity</label>
+          <input type="number" formControlName="minCapacity" min="1" step="1" placeholder="e.g. 4" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-primary-500 transition text-sm" />
+        </div>
+
+        <!-- Actions -->
+        <div class="md:col-span-6 flex justify-end space-x-3 pt-2">
+          <button type="button" *ngIf="availableRoomsSearched" (click)="resetSearch()" class="py-2 px-4 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl transition text-sm">
+            Reset Filters
+          </button>
+          <button type="submit" [disabled]="isSearching || searchForm.invalid" class="py-2.5 px-6 bg-primary-600 hover:bg-primary-500 text-white font-semibold rounded-xl transition shadow-md shadow-primary-600/20 text-sm flex items-center space-x-2">
+            <svg *ngIf="isSearching" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>{{ isSearching ? 'Searching...' : 'Search Available Rooms' }}</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Rooms List Section -->
+    <section class="space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="text-xl font-extrabold text-slate-800">
+            {{ availableRoomsSearched ? 'Available Rooms for Selection' : 'All Meeting Rooms' }}
+          </h3>
+          <p class="text-slate-500 text-xs mt-1">
+            {{ availableRoomsSearched ? 'Showing rooms available during the searched date and times' : 'Browse meeting rooms in the workspace catalog' }}
+          </p>
+        </div>
+        <span *ngIf="rooms.length > 0" class="text-xs font-semibold text-slate-400 bg-slate-200 px-3 py-1 rounded-full border border-slate-300">
+          {{ rooms.length }} Room{{ rooms.length > 1 ? 's' : '' }} Listed
+        </span>
+      </div>
+
+      <!-- No Rooms Alert -->
+      <div *ngIf="rooms.length === 0" class="bg-white py-12 px-4 border border-slate-200 rounded-2xl text-center space-y-3">
+        <div class="mx-auto w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+        <h4 class="font-bold text-slate-700">No Rooms Available</h4>
+        <p class="text-sm text-slate-500 max-w-sm mx-auto">
+          {{ availableRoomsSearched ? 'All rooms are fully booked for this time slot, or none match your capacity/building filter. Try adjusting search filters.' : 'No rooms have been added to the catalog yet. Check back soon!' }}
+        </p>
+        <button *ngIf="availableRoomsSearched" (click)="resetSearch()" class="text-sm font-semibold text-primary-600 hover:text-primary-700 transition">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Rooms Grid -->
+      <div *ngIf="rooms.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let room of rooms" class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-slate-300 transition duration-200 flex flex-col group">
+          <!-- Room Image -->
+          <div class="h-48 w-full bg-slate-200 overflow-hidden relative">
+            <img [src]="roomImageSrc(room)" 
+                 [alt]="room.name" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+            <div class="absolute top-3 left-3 bg-white/95 backdrop-blur px-2.5 py-1 rounded-full text-xs font-semibold shadow border border-slate-100 flex items-center space-x-1 text-slate-700">
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              <span>Capacity: {{ room.capacity }}</span>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold shadow flex items-center space-x-1"
+                 [ngClass]="{
+                   'bg-emerald-500 text-white': room.status === 'AVAILABLE',
+                   'bg-amber-500 text-white': room.status === 'UNDER_MAINTENANCE',
+                   'bg-red-500 text-white': room.status === 'CURRENTLY_UNAVAILABLE'
+                 }">
+              <span>{{ room.status === 'AVAILABLE' ? '🟢 Available' : (room.status === 'UNDER_MAINTENANCE' ? '🛠️ Under Maintenance' : '⛔ Unavailable') }}</span>
+            </div>
+          </div>
+
+          <!-- Room Details -->
+          <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex justify-between items-start">
+                <h4 class="text-lg font-bold text-slate-800 group-hover:text-primary-600 transition">{{ room.name }}</h4>
+              </div>
+              
+              <!-- Separate Location Table Display -->
+              <p class="text-xs font-medium text-slate-500 flex items-center space-x-1">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="font-bold text-slate-700">{{ room.location?.building_name || 'Building' }}</span>
+                <span>• {{ room.location?.floor || 'Floor' }}</span>
+                <span *ngIf="room.location?.block">({{ room.location?.block }})</span>
+              </p>
+              
+              <p class="text-sm text-slate-600 line-clamp-2 h-10 overflow-hidden leading-relaxed">{{ room.description || 'No description provided.' }}</p>
+            </div>
+
+            <!-- Features Tags -->
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <span *ngFor="let feat of room.features" class="text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+                {{ feat }}
+              </span>
+            </div>
+
+            <!-- Actions Controls -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div class="w-full">
+                <ng-container *ngIf="availableRoomsSearched">
+                  <button *ngIf="room.status === 'AVAILABLE'" (click)="openBookingModal(room)" class="w-full py-2.5 px-4 bg-primary-600 hover:bg-primary-500 text-white font-semibold rounded-xl transition text-xs shadow-md shadow-primary-600/10 flex items-center justify-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Book This Room</span>
+                  </button>
+
+                  <button *ngIf="room.status !== 'AVAILABLE'" disabled class="w-full py-2.5 px-4 bg-slate-100 text-slate-400 font-semibold rounded-xl text-xs cursor-not-allowed border border-slate-200 flex items-center justify-center space-x-2">
+                    <span>{{ room.status === 'UNDER_MAINTENANCE' ? '🛠️ Under Maintenance' : '⛔ Currently Unavailable' }}</span>
+                  </button>
+                </ng-container>
+
+                <span *ngIf="!availableRoomsSearched" class="text-xs text-slate-400 italic block text-center py-2">
+                  Search availability to book
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================================= -->
+<!-- MODAL: CONFIRM BOOKING & SELECT PARTICIPANTS -->
+<!-- ============================================= -->
+<div *ngIf="showBookingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+  <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+    <div class="px-6 py-4 bg-primary-600 text-white flex justify-between items-center">
+      <h4 class="font-extrabold text-lg">Confirm Booking & Invite Participants</h4>
+      <button (click)="closeBookingModal()" class="text-primary-100 hover:text-white transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="p-6 space-y-5 overflow-y-auto">
+      <!-- In-Modal Error Alert Banner -->
+      <div *ngIf="modalError" class="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs font-semibold flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>{{ modalError }}</span>
+        </div>
+        <button (click)="modalError = ''" class="text-red-400 hover:text-red-600 font-bold ml-2">✕</button>
+      </div>
+
+      <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2 text-sm">
+        <p class="text-slate-500 font-semibold uppercase tracking-wider text-[10px]">Room Selected</p>
+        <p class="font-bold text-slate-800 text-base">{{ selectedRoom?.name }} ({{ selectedRoom?.location?.building_name }} - {{ selectedRoom?.location?.floor }})</p>
+        
+        <!-- Room Features Pills -->
+        <div *ngIf="selectedRoom?.features && selectedRoom!.features!.length > 0" class="flex flex-wrap gap-1.5 pt-1">
+          <span *ngFor="let feat of selectedRoom?.features" class="px-2.5 py-0.5 bg-white border border-slate-200 text-slate-600 rounded-full text-[11px] font-semibold">
+            ✨ {{ feat }}
+          </span>
+        </div>
+
+        <p class="text-slate-500 font-semibold uppercase tracking-wider text-[10px] mt-3">Date & Time</p>
+        <p class="font-semibold text-slate-700">
+          {{ searchForm.get('date')?.value }} &#64; {{ searchForm.get('startTime')?.value }} - {{ searchForm.get('endTime')?.value }}
+        </p>
+      </div>
+
+      <!-- Booking Title -->
+      <div>
+        <label for="bookingTitle" class="block text-sm font-semibold text-slate-700">Booking Title / Meeting Agenda</label>
+        <input 
+          #bookingTitleInput
+          id="bookingTitle"
+          type="text" 
+          placeholder="e.g. Daily Standup, Sprint Review" 
+          class="mt-1 w-full px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+        />
+      </div>
+
+      <!-- Repeat Reservation / Recurring Series -->
+      <div class="p-4 bg-purple-50/60 border border-purple-100 rounded-xl space-y-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-sm">🔁</span>
+          <label class="block text-xs font-bold text-purple-900 uppercase tracking-wider">Repeat Reservation (Recurring Series)</label>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Repeat Frequency:</label>
+            <select [(ngModel)]="recurrencePattern" (change)="onRecurrenceChange()" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none bg-white font-semibold text-slate-700">
+              <option value="NONE">Single Meeting (Does not repeat)</option>
+              <option value="DAILY">Daily (Every day)</option>
+              <option value="WEEKLY">Weekly (Every week on same day)</option>
+              <option value="MONTHLY">Monthly (Every month on same date)</option>
+            </select>
+          </div>
+
+          <div *ngIf="recurrencePattern !== 'NONE'">
+            <label class="block font-semibold text-slate-700 mb-1">Series Duration / End Window:</label>
+            <select [(ngModel)]="recurrenceDuration" (change)="updateRecurrenceCount()" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none bg-white font-semibold text-slate-700">
+              <option value="1_MONTH">🗓️ 1 Month Duration</option>
+              <option value="2_MONTHS">🗓️ 2 Months Duration</option>
+              <option value="3_MONTHS">🗓️ 3 Months Duration</option>
+              <option value="6_MONTHS">🗓️ 6 Months Duration</option>
+              <option value="CUSTOM">⚙️ Custom Number of Meetings</option>
+            </select>
+          </div>
+
+          <div *ngIf="recurrencePattern !== 'NONE' && recurrenceDuration === 'CUSTOM'" class="col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1">Custom Occurrences Count (1 to 12):</label>
+            <input type="number" min="1" max="12" [(ngModel)]="recurrenceCount" class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none bg-white font-semibold text-slate-700" />
+          </div>
+        </div>
+
+        <p *ngIf="recurrencePattern !== 'NONE'" class="text-[11px] font-bold text-purple-700 pt-1">
+          ✨ Series Summary: Reserves {{ recurrenceCount }} total meetings ({{ recurrencePattern | titlecase }} series).
+        </p>
+      </div>
+
+      <!-- Scalable Meeting Participants Selection (1,000+ Users) -->
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-slate-700">Add Meeting Participants</label>
+        <p class="text-xs text-slate-500">Search team members or type email/name and press Add:</p>
+        
+        <!-- Live Search & Add Input Box -->
+        <div class="flex space-x-2">
+          <input 
+            type="text"
+            [(ngModel)]="participantSearchTerm"
+            (keyup.enter)="addParticipant(participantSearchTerm)"
+            placeholder="Search by name/email or type participant..."
+            class="flex-grow px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <button 
+            type="button"
+            (click)="addParticipant(participantSearchTerm)"
+            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs transition"
+          >
+            + Add
+          </button>
+        </div>
+
+        <!-- Matching Users Auto-Complete Suggestions (Top 5 Matches) -->
+        <div *ngIf="participantSearchTerm && filteredUsers.length > 0" class="border border-slate-200 rounded-xl bg-white shadow-md max-h-36 overflow-y-auto divide-y divide-slate-100">
+          <div *ngFor="let user of filteredUsers" 
+               (click)="addParticipant(user.full_name)"
+               class="p-2.5 hover:bg-primary-50 cursor-pointer flex justify-between items-center text-xs transition">
+            <span class="font-bold text-slate-700">{{ user.full_name }}</span>
+            <span class="text-slate-400">{{ user.email }}</span>
+          </div>
+        </div>
+
+        <!-- Selected Participants Chip Badges with X Button -->
+        <div *ngIf="selectedParticipants.length > 0" class="pt-2">
+          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Participants Selected ({{ selectedParticipants.length }}):</p>
+          <div class="flex flex-wrap gap-2">
+            <span *ngFor="let p of selectedParticipants" 
+                  class="inline-flex items-center space-x-1.5 text-xs font-semibold bg-primary-50 text-primary-800 px-3 py-1 rounded-full border border-primary-200 shadow-sm">
+              <span>{{ p }}</span>
+              <button type="button" 
+                      (click)="removeParticipant(p)" 
+                      title="Remove participant"
+                      class="w-4 h-4 rounded-full bg-primary-200 hover:bg-red-500 hover:text-white text-primary-800 flex items-center justify-center transition text-[10px] leading-none font-bold">
+                ✕
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-4 border-t border-slate-100">
+        <button type="button" (click)="closeBookingModal()" class="py-2.5 px-4 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl text-sm transition">Cancel</button>
+        <button 
+          (click)="confirmBooking(bookingTitleInput.value)" 
+          [disabled]="isBookingRoom"
+          class="py-2.5 px-6 bg-primary-600 hover:bg-primary-500 text-white font-semibold rounded-xl text-sm transition flex items-center space-x-2 shadow-md shadow-primary-600/20"
+        >
+          <svg *ngIf="isBookingRoom" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ isBookingRoom ? 'Confirming...' : 'Book Room Now' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
